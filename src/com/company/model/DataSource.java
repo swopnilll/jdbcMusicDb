@@ -69,4 +69,38 @@ public class DataSource {
      }
  }
 
+ public List<String> queryAlbumsForArtist(String artistName, int sortOrder){
+     StringBuilder sb = new StringBuilder(Constant.QUERY_ALBUMS_BY_ARTIST_START);
+     sb.append(artistName);
+     sb.append("\"");
+
+     if(sortOrder != Constant.ORDER_BY_NONE) {
+         sb.append(Constant.QUERY_ALBUMS_BY_ARTIST_SORT);
+         if(sortOrder == Constant.ORDER_BY_DESC) {
+             sb.append("DESC");
+         } else {
+             sb.append("ASC");
+         }
+     }
+
+     System.out.println("SQL statement = " + sb.toString());
+
+     try(Statement statement = connectionObject.createStatement();
+         ResultSet resultSet = statement.executeQuery(sb.toString())){
+
+         List<String> albums = new ArrayList<>();
+
+         while (resultSet.next()){
+
+             albums.add(resultSet.getString(1));
+         }
+
+         return  albums;
+
+     }catch (SQLException e){
+         System.out.println("Issue with Fetching results" + e.getMessage());
+         return null;
+     }
+ }
+
 }
